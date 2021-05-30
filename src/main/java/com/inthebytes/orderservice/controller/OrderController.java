@@ -1,4 +1,4 @@
-package com.inthebytes.controller;
+package com.inthebytes.orderservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -9,13 +9,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
-import com.inthebytes.dto.OrderDto;
-import com.inthebytes.service.OrderService;
+import com.inthebytes.orderservice.JwtProperties;
+import com.inthebytes.orderservice.dto.OrderDto;
+import com.inthebytes.orderservice.service.OrderService;
 
 @RestController
 @RequestMapping("/orders")
@@ -27,6 +29,7 @@ public class OrderController {
 	@GetMapping(value = {"", "/{orderId}"})
 	public ResponseEntity<Page<OrderDto>> getOrders(
 			@PathVariable(required = false) String orderId,
+			@RequestHeader(name = JwtProperties.HEADER_STRING) String token,
 			@RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize, 
 			@RequestParam(value = "page", required = false, defaultValue = "0") Integer page
 			) {
@@ -40,17 +43,10 @@ public class OrderController {
 		return null;
 	}
 	
-	@PutMapping(value = {"", "/{orderId}"})
+	@PutMapping(value = "/{orderId}")
 	public ResponseEntity<OrderDto> updateOrder(
-			@PathVariable(required = false) String orderId,
 			@Valid @RequestBody OrderDto updatedOrder
 			) {
-		
-		if (orderId != null) {
-			
-		} else {
-			
-		}
 		
 		return null;
 	}

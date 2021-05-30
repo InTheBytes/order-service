@@ -1,4 +1,4 @@
-package com.inthebytes.entity;
+package com.inthebytes.orderservice.entity;
 
 import java.io.Serializable;
 
@@ -18,7 +18,20 @@ public class Order implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "order_id")
-	private Long foodId;
+	private Long orderId;
 	
 	
+	
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+
+	public Long getOrderId() {
+		return orderId;
+	}
+
+	public void setOrderId(Long orderId) {
+		this.orderId = orderId;
+	}
 }
