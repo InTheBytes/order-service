@@ -40,14 +40,6 @@ public class OrderController {
 		return null;
 	}
 	
-	@DeleteMapping(value = "/{orderId}")
-	public ResponseEntity<?> deleteOrder(
-			@PathVariable("orderId") String orderId
-			) {
-		
-		return null;
-	}
-	
 	@PutMapping(value = {"", "/{orderId}"})
 	public ResponseEntity<OrderDto> updateOrder(
 			@PathVariable(required = false) String orderId,
@@ -66,6 +58,16 @@ public class OrderController {
 	@PostMapping(value = "")
 	public ResponseEntity<OrderDto> createOrder(
 			@Valid @RequestBody OrderDto newOrder
+			) {
+		
+		return null;
+	}
+	
+
+	
+	@DeleteMapping(value = "/{orderId}")
+	public ResponseEntity<?> deleteOrder(
+			@PathVariable("orderId") String orderId
 			) {
 		
 		return null;
