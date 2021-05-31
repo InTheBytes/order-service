@@ -2,6 +2,7 @@ package com.inthebytes.orderservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,8 @@ import javax.validation.Valid;
 
 import com.inthebytes.orderservice.JwtProperties;
 import com.inthebytes.orderservice.dto.OrderDto;
+import com.inthebytes.orderservice.exception.EntityNotExistsException;
+import com.inthebytes.orderservice.exception.NotAuthorizedException;
 import com.inthebytes.orderservice.service.OrderService;
 
 @RestController
@@ -27,20 +30,25 @@ public class OrderController {
 	OrderService orderService;
 	
 	@GetMapping(value = {"", "/{orderId}"})
-	public ResponseEntity<Page<OrderDto>> getOrders(
+	public ResponseEntity<?> getOrders(
 			@PathVariable(required = false) String orderId,
 			@RequestHeader(name = JwtProperties.HEADER_STRING) String token,
 			@RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize, 
 			@RequestParam(value = "page", required = false, defaultValue = "0") Integer page
 			) {
 		
-		if (orderId != null) {
+		try {
+			if (orderId == null) {
+				return ResponseEntity.ok().body(orderService.getOrdersByAuth(token, pageSize, page));
+			} else {
+				return ResponseEntity.ok().body(orderService.getOrder(token, orderId));
+			}
+		} catch (NotAuthorizedException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 			
-		} else {
-			
+		} catch (EntityNotExistsException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
-		
-		return null;
 	}
 	
 	@PutMapping(value = "/{orderId}")

@@ -18,20 +18,51 @@ public class Order implements Serializable {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "order_id")
-	private Long orderId;
+	private String orderId;
 	
+	@Column(name = "user_id")
+	private User customer;
 	
+	@Column(name = "restaurant_id")
+	private Restaurant restaurant;
+	
+	@Column(name = "driver_id")
+	private Delivery delivery;
 	
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
 
-	public Long getOrderId() {
+	public String getOrderId() {
 		return orderId;
 	}
 
-	public void setOrderId(Long orderId) {
+	public void setOrderId(String orderId) {
 		this.orderId = orderId;
+	}
+
+	public User getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(User customer) {
+		this.customer = customer;
+	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+	public User getDriver() {
+		return delivery.getDriver();
+	}
+
+	public void setDriver(Delivery delivery) {
+		this.delivery = delivery;
 	}
 }

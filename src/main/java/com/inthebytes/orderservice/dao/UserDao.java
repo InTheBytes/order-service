@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import com.inthebytes.orderservice.entity.User;
 
 @Repository
-public interface UserDao extends JpaRepository<User, Long> {
+public interface UserDao extends JpaRepository<User, String> {
 	User findByUsername(String username);
 }

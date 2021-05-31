@@ -23,10 +23,4 @@ public class MapperService {
 	public Page<OrderDto> convert(Page<Order> orders) {
 		return orders.map((x) -> convert(x));
 	}
-	
-	public UserDto convert(User entity) {
-		
-		return null;
-	}
-
 }

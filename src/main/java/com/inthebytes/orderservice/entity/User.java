@@ -6,7 +6,13 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.springframework.lang.Nullable;
 
 @Entity
 @Table(name = "user")
@@ -15,17 +21,26 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "user_id")
-	private Long userId;
+	private String userId;
 	
 	@Basic
 	@Column(name = "username")
 	private String username;
+	
+	@Column(name = "role_id")
+	private Role role;
+	
+	@ManyToOne(optional = true)
+	@JoinTable(name = "manager",
+			joinColumns = {@JoinColumn(name = "user_id")},
+			inverseJoinColumns = {@JoinColumn(name = "restaurant_id")})
+	private Restaurant restaurant;
 
-	public Long getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 
@@ -35,6 +50,22 @@ public class User {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
+	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
 	}
 
 	@Override
@@ -70,6 +101,7 @@ public class User {
 
 	@Override
 	public String toString() {
-		return "User [userId=" + userId + ", username=" + username + "]";
+		return "User [username=" + username + ", role=" + role + "]";
 	}
+
 }

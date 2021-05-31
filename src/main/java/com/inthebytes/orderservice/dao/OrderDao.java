@@ -9,8 +9,10 @@ import org.springframework.stereotype.Repository;
 import com.inthebytes.orderservice.entity.Order;
 
 @Repository
-public interface OrderDao extends JpaRepository<Order, Long>, JpaSpecificationExecutor<Order> {
-	Order findByOrderId(Long orderId);
+public interface OrderDao extends JpaRepository<Order, String>, JpaSpecificationExecutor<Order> {
+	Order findByOrderId(String orderId);
+	
 	Page<Order> findAll(Pageable pageable);
-	Page<Order> findByUserId(Long userId, Pageable pageable);
+	Page<Order> findByUserId(String userId, Pageable pageable);
+	Page<Order> findByRestaurantId(String restaurantId, Pageable pageable);
 }
