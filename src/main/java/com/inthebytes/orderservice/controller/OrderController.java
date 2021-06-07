@@ -37,6 +37,8 @@ public class OrderController {
 			@RequestParam(value = "page", required = false, defaultValue = "0") Integer page
 			) {
 		
+		if (token == null)
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		try {
 			if (orderId == null) {
 				return ResponseEntity.ok().body(orderService.getOrdersByAuth(token, pageSize, page));
@@ -44,7 +46,7 @@ public class OrderController {
 				return ResponseEntity.ok().body(orderService.getOrder(token, orderId));
 			}
 		} catch (NotAuthorizedException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
 			
 		} catch (EntityNotExistsException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();

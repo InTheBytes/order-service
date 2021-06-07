@@ -11,8 +11,10 @@ import com.inthebytes.orderservice.entity.Order;
 @Repository
 public interface OrderDao extends JpaRepository<Order, String>, JpaSpecificationExecutor<Order> {
 	Order findByOrderId(String orderId);
+	Order findByDeliveryId(String deliveryId);
 	
 	Page<Order> findAll(Pageable pageable);
-	Page<Order> findByUserId(String userId, Pageable pageable);
-	Page<Order> findByRestaurantId(String restaurantId, Pageable pageable);
+	Page<Order> findByCustomer(String userId, Pageable pageable);
+	Page<Order> findByRestaurant(String restaurantId, Pageable pageable);
+	
 }

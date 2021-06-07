@@ -9,10 +9,14 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.inthebytes.orderservice.JwtProperties;
+import com.inthebytes.orderservice.dao.DeliveryDao;
+import com.inthebytes.orderservice.dao.DriverDao;
 import com.inthebytes.orderservice.dao.OrderDao;
 import com.inthebytes.orderservice.dao.RestaurantDao;
 import com.inthebytes.orderservice.dao.UserDao;
 import com.inthebytes.orderservice.dto.OrderDto;
+import com.inthebytes.orderservice.entity.Delivery;
+import com.inthebytes.orderservice.entity.Driver;
 import com.inthebytes.orderservice.entity.Order;
 import com.inthebytes.orderservice.entity.Restaurant;
 import com.inthebytes.orderservice.entity.User;
@@ -37,6 +41,12 @@ public class OrderService {
 	
 	@Autowired
 	RestaurantDao restaurantRepo;
+	
+	@Autowired
+	DriverDao driverRepo;
+	
+	@Autowired
+	DeliveryDao deliveryRepo;
 	
 	
 	public Page<OrderDto> getOrdersByAuth(String token, Integer pageSize, Integer page) 
@@ -71,7 +81,7 @@ public class OrderService {
 			throws NotAuthorizedException {
 		
 		return mapper.convert(
-				orderRepo.findByUserId(
+				orderRepo.findByCustomer(
 						findUser(username).getUserId(), 
 						PageRequest.of(page, pageSize)));
 	}
@@ -88,13 +98,23 @@ public class OrderService {
 		if (restaurant == null)
 			throw new EntityNotExistsException();
 		return mapper.convert(
-				orderRepo.findByRestaurantId(
+				orderRepo.findByRestaurant(
 						restaurant.getRestaurantId(), 
 						PageRequest.of(page, pageSize)));
 	}
 	
 	public Page<OrderDto> getOrdersByDriver(Credentials user, Integer pageSize, Integer page) {
-		return null;
+		Driver driver = driverRepo.findByUserId(
+				userRepo.findByUsername(
+						user.getUsername()).getUserId());
+		
+		Page<Delivery> deliveries = deliveryRepo.findByDriverId(
+				driver.getDriverId(), 
+				PageRequest.of(page, pageSize));
+		
+		return deliveries.map(
+				(x) -> mapper.convert(
+						orderRepo.findByDeliveryId(x.getDeliveryId())));
 	}
 	
 	
@@ -132,7 +152,9 @@ public class OrderService {
 	
 	
 	public OrderDto createOrder(OrderDto order) {
-		return mapper.convert(orderRepo.save(mapper.convert(order)));
+		Order orderEntity = mapper.convert(order);
+		
+		return mapper.convert(orderRepo.save(orderEntity));
 	}
 	
 	
