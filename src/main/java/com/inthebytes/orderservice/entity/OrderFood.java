@@ -1,5 +1,7 @@
 package com.inthebytes.orderservice.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -9,8 +11,10 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "order_food")
-public class OrderFood {
+public class OrderFood implements Serializable {
 	
+	private static final long serialVersionUID = 4314903745539213L;
+
 	@EmbeddedId
 	private OrderFoodKey id;
 	
@@ -55,6 +59,10 @@ public class OrderFood {
 
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	@Override

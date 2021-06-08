@@ -1,5 +1,7 @@
 package com.inthebytes.orderservice.entity;
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -16,9 +18,11 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.lang.Nullable;
 
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name = "`user`")
+public class User implements Serializable {
 	
+	private static final long serialVersionUID = -3978420168481421658L;
+
 	@Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(
@@ -32,7 +36,7 @@ public class User {
 	@Column(name = "username")
 	private String username;
 	
-	@Column(name = "role_id")
+	@Column(name = "user_role")
 	private Role role;
 	
 	@ManyToOne(optional = true)
@@ -71,6 +75,10 @@ public class User {
 
 	public void setRestaurant(Restaurant restaurant) {
 		this.restaurant = restaurant;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 
 	@Override
