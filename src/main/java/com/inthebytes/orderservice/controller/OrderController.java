@@ -41,9 +41,11 @@ public class OrderController {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
 		try {
 			if (orderId == null) {
-				return ResponseEntity.ok().body(orderService.getOrdersByAuth(token, pageSize, page));
+				Page<OrderDto> orders = orderService.getOrdersByAuth(token, pageSize, page);
+				return ResponseEntity.ok().body(orders);
 			} else {
-				return ResponseEntity.ok().body(orderService.getOrder(token, orderId));
+				OrderDto order = orderService.getOrder(token, orderId);
+				return ResponseEntity.ok().body(order);
 			}
 		} catch (NotAuthorizedException e) {
 			return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

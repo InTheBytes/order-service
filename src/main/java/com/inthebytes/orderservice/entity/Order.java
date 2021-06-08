@@ -1,6 +1,7 @@
 package com.inthebytes.orderservice.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -43,11 +44,20 @@ public class Order implements Serializable {
 	@Column(name = "status")
 	private Integer status;
 	
+	@Column(name = "destination_id")
+	private Location destination;
+	
 	@Column(name = "special_instructions")
 	private String specialInstructions;
 	
 	@OneToMany(mappedBy = "order")
 	private List<OrderFood> orderFood;
+	
+	@Column(name = "window_start")
+	private Timestamp windowStart;
+	
+	@Column(name = "window_end")
+	private Timestamp windowEnd;
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
@@ -107,6 +117,30 @@ public class Order implements Serializable {
 
 	public void setOrderFood(List<OrderFood> orderFood) {
 		this.orderFood = orderFood;
+	}
+
+	public Location getDestination() {
+		return destination;
+	}
+
+	public void setDestination(Location destination) {
+		this.destination = destination;
+	}
+
+	public Timestamp getWindowStart() {
+		return windowStart;
+	}
+
+	public void setWindowStart(Timestamp windowStart) {
+		this.windowStart = windowStart;
+	}
+
+	public Timestamp getWindowEnd() {
+		return windowEnd;
+	}
+
+	public void setWindowEnd(Timestamp windowEnd) {
+		this.windowEnd = windowEnd;
 	}
 
 	@Override

@@ -60,11 +60,7 @@ public class OrderFood implements Serializable {
 	public void setQuantity(Integer quantity) {
 		this.quantity = quantity;
 	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
+	
 	@Override
 	public int hashCode() {
 		final int prime = 31;
