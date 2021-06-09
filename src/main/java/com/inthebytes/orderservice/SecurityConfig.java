@@ -28,8 +28,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 				.antMatchers(HttpMethod.DELETE, "/orders/**").hasRole("ADMIN")
 				.antMatchers(HttpMethod.GET, "/orders/**").authenticated()
-				.antMatchers(HttpMethod.POST, "/orders/**").hasAnyRole("ADMIN", "USER")
-				.antMatchers(HttpMethod.PUT, "/orders/**").hasAnyRole("ADMIN", "USER")
+				.antMatchers(HttpMethod.GET, "/orders").authenticated()
+				.antMatchers(HttpMethod.POST, "/orders").hasAnyRole("ADMIN", "CUSTOMER")
+				.antMatchers(HttpMethod.POST, "/orders/**").hasAnyRole("ADMIN", "CUSTOMER")
+				.antMatchers(HttpMethod.PUT, "/orders/**").hasAnyRole("ADMIN", "CUSTOMER")
 			
 			.and()
         	.httpBasic().disable();

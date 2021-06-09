@@ -3,7 +3,12 @@ package com.inthebytes.orderservice.dto;
 import java.sql.Timestamp;
 import java.util.List;
 
-public class OrderDto {
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+public class OrderDisplayDto {
 	
 	private String id;
 	
@@ -11,8 +16,12 @@ public class OrderDto {
 	
 	private String destination;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp windowStartTime;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp windowEndTime;
 	
 	private String specialInstructions;

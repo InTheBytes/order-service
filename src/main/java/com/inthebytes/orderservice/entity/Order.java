@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -46,7 +47,7 @@ public class Order implements Serializable {
 	@ManyToOne @JoinColumn(name = "user_id")
 	private User customer;
 	
-	@ManyToOne @JoinColumn(name = "destination_id")
+	@ManyToOne(cascade = CascadeType.ALL) @JoinColumn(name = "destination_id")
 	private Location destination;
 	
 	@ManyToOne @JoinColumn(name = "restaurant_id")
