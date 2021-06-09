@@ -7,10 +7,9 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -20,9 +19,9 @@ import org.hibernate.annotations.GenericGenerator;
 @Entity
 @Table(name = "`order`")
 public class Order implements Serializable {
-
-	private static final long serialVersionUID = 3110119306284727886L;
-
+	
+	private static final long serialVersionUID = 9189105789812769743L;
+	
 	@Id
 	@GeneratedValue(generator = "UUID")
 	@GenericGenerator(
@@ -30,69 +29,41 @@ public class Order implements Serializable {
 	    strategy = "org.hibernate.id.UUIDGenerator"
 	)
 	@Column(name = "order_id")
-	private String orderId;
-	
-	@OneToOne @JoinColumn(name = "user_id")
-	private User customer;
-	
-	@OneToOne @JoinColumn(name = "restaurant_id")
-	private Restaurant restaurant;
-	
-	@OneToOne(mappedBy = "order")
-	private Delivery delivery;
+	private String id;
 	
 	@Column(name = "status")
 	private Integer status;
 	
-	@Column(name = "destination_id")
-	private Location destination;
-	
 	@Column(name = "special_instructions")
 	private String specialInstructions;
-	
-	@OneToMany(mappedBy = "order")
-	private List<OrderFood> orderFood;
 	
 	@Column(name = "window_start")
 	private Timestamp windowStart;
 	
 	@Column(name = "window_end")
 	private Timestamp windowEnd;
+	
+	@ManyToOne @JoinColumn(name = "user_id")
+	private User customer;
+	
+	@ManyToOne @JoinColumn(name = "destination_id")
+	private Location destination;
+	
+	@ManyToOne @JoinColumn(name = "restaurant_id")
+	private Restaurant restaurant;
+	
+	@OneToMany(mappedBy = "order")
+	private List<OrderFood> foods;
+	
+	@OneToOne(mappedBy = "order", optional = true)
+	private Delivery delivery;
 
-	public static long getSerialversionuid() {
-		return serialVersionUID;
+	public String getId() {
+		return id;
 	}
 
-	public String getOrderId() {
-		return orderId;
-	}
-
-	public void setOrderId(String orderId) {
-		this.orderId = orderId;
-	}
-
-	public User getCustomer() {
-		return customer;
-	}
-
-	public void setCustomer(User customer) {
-		this.customer = customer;
-	}
-
-	public Restaurant getRestaurant() {
-		return restaurant;
-	}
-
-	public void setRestaurant(Restaurant restaurant) {
-		this.restaurant = restaurant;
-	}
-
-	public Delivery getDelivery() {
-		return delivery;
-	}
-
-	public void setDelivery(Delivery delivery) {
-		this.delivery = delivery;
+	public void setId(String id) {
+		this.id = id;
 	}
 
 	public Integer getStatus() {
@@ -111,22 +82,6 @@ public class Order implements Serializable {
 		this.specialInstructions = specialInstructions;
 	}
 
-	public List<OrderFood> getOrderFood() {
-		return orderFood;
-	}
-
-	public void setOrderFood(List<OrderFood> orderFood) {
-		this.orderFood = orderFood;
-	}
-
-	public Location getDestination() {
-		return destination;
-	}
-
-	public void setDestination(Location destination) {
-		this.destination = destination;
-	}
-
 	public Timestamp getWindowStart() {
 		return windowStart;
 	}
@@ -143,70 +98,51 @@ public class Order implements Serializable {
 		this.windowEnd = windowEnd;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((customer == null) ? 0 : customer.hashCode());
-		result = prime * result + ((delivery == null) ? 0 : delivery.hashCode());
-		result = prime * result + ((orderFood == null) ? 0 : orderFood.hashCode());
-		result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
-		result = prime * result + ((restaurant == null) ? 0 : restaurant.hashCode());
-		result = prime * result + ((specialInstructions == null) ? 0 : specialInstructions.hashCode());
-		result = prime * result + ((status == null) ? 0 : status.hashCode());
-		return result;
+	public User getCustomer() {
+		return customer;
 	}
 
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Order other = (Order) obj;
-		if (customer == null) {
-			if (other.customer != null)
-				return false;
-		} else if (!customer.equals(other.customer))
-			return false;
-		if (delivery == null) {
-			if (other.delivery != null)
-				return false;
-		} else if (!delivery.equals(other.delivery))
-			return false;
-		if (orderFood == null) {
-			if (other.orderFood != null)
-				return false;
-		} else if (!orderFood.equals(other.orderFood))
-			return false;
-		if (orderId == null) {
-			if (other.orderId != null)
-				return false;
-		} else if (!orderId.equals(other.orderId))
-			return false;
-		if (restaurant == null) {
-			if (other.restaurant != null)
-				return false;
-		} else if (!restaurant.equals(other.restaurant))
-			return false;
-		if (specialInstructions == null) {
-			if (other.specialInstructions != null)
-				return false;
-		} else if (!specialInstructions.equals(other.specialInstructions))
-			return false;
-		if (status == null) {
-			if (other.status != null)
-				return false;
-		} else if (!status.equals(other.status))
-			return false;
-		return true;
+	public void setCustomer(User customer) {
+		this.customer = customer;
 	}
 
-	@Override
-	public String toString() {
-		return "Order [customer=" + customer + ", restaurant=" + restaurant + ", delivery=" + delivery + ", status="
-				+ status + ", specialInstructions=" + specialInstructions + ", orderFood=" + orderFood + "]";
+	public Location getDestination() {
+		return destination;
+	}
+
+	public void setDestination(Location destination) {
+		this.destination = destination;
+	}
+
+	public Restaurant getRestaurant() {
+		return restaurant;
+	}
+
+	public void setRestaurant(Restaurant restaurant) {
+		this.restaurant = restaurant;
+	}
+
+	public List<OrderFood> getFoods() {
+		return foods;
+	}
+
+	public void setFoods(List<OrderFood> foods) {
+		this.foods = foods;
+	}
+
+	public Delivery getDelivery() {
+		return delivery;
+	}
+
+	public void setDelivery(Delivery delivery) {
+		this.delivery = delivery;
+	}
+	
+	public User getDriver() {
+		return getDelivery().getDriver().getDriver();
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
 	}
 }

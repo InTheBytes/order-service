@@ -1,10 +1,12 @@
 package com.inthebytes.orderservice.dto;
 
-public class UserDto {
+public class RestaurantDto {
 	
 	private String id;
 	
 	private String name;
+	
+	private String location;
 
 	public String getId() {
 		return id;
@@ -20,6 +22,14 @@ public class UserDto {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 	
 	

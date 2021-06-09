@@ -8,7 +8,6 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.inthebytes.orderservice.JwtProperties;
 import com.inthebytes.orderservice.dao.UserDao;
-import com.inthebytes.orderservice.entity.Restaurant;
 
 @Service
 public class TokenService {
@@ -27,10 +26,6 @@ public class TokenService {
 		
 		public String getUsername() {return this.username;}
 		public String getRole() {return this.role;}
-		
-		public Restaurant getRestaurant() {
-			return repo.findByUsername(username).getRestaurant();
-		}
 	}
 	
 	public Credentials readToken(String token) {

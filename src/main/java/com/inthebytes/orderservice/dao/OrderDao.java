@@ -3,20 +3,17 @@ package com.inthebytes.orderservice.dao;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import com.inthebytes.orderservice.entity.Delivery;
 import com.inthebytes.orderservice.entity.Order;
+import com.inthebytes.orderservice.entity.Restaurant;
+import com.inthebytes.orderservice.entity.User;
 
 @Repository
-public interface OrderDao extends JpaRepository<Order, String>, JpaSpecificationExecutor<Order>, PagingAndSortingRepository<Order, String> {
-	Order findByOrderId(String orderId);
-	Order findByDeliveryId(String deliveryId);
-	
+public interface OrderDao extends JpaRepository<Order, String> {
 	Page<Order> findAll(Pageable pageable);
-	Page<Order> findByCustomer(String userId, Pageable pageable);
-	Page<Order> findByRestaurant(String restaurantId, Pageable pageable);
-	
+	Page<Order> findByCustomerUsername(String username, Pageable pageable);
+	Page<Order> findByRestaurantManagerUsername(String username, Pageable pageable);
+	Page<Order> findByDeliveryDriverDriverUsername(String username, Pageable pageable);
 }

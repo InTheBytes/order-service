@@ -4,17 +4,11 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 @Embeddable
 public class OrderFoodKey implements Serializable {
-	
-	private static final long serialVersionUID = -2780060076808952539L;
+
+	private static final long serialVersionUID = -3134339846569940109L;
 
 	@Column(name = "order_id")
 	private String orderId;
@@ -42,39 +36,4 @@ public class OrderFoodKey implements Serializable {
 		return serialVersionUID;
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((foodId == null) ? 0 : foodId.hashCode());
-		result = prime * result + ((orderId == null) ? 0 : orderId.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		OrderFoodKey other = (OrderFoodKey) obj;
-		if (foodId == null) {
-			if (other.foodId != null)
-				return false;
-		} else if (!foodId.equals(other.foodId))
-			return false;
-		if (orderId == null) {
-			if (other.orderId != null)
-				return false;
-		} else if (!orderId.equals(other.orderId))
-			return false;
-		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "OrderFoodKey [orderId=" + orderId + ", foodId=" + foodId + "]";
-	}
 }

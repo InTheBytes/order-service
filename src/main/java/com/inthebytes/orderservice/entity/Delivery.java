@@ -5,20 +5,20 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-@Entity @Table(name = "delivery")
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+@Entity
+@Table(name = "delivery")
 public class Delivery implements Serializable {
 
-	private static final long serialVersionUID = 4883837882477014012L;
+	private static final long serialVersionUID = -7734366126137126454L;
 	
 	@Id
 	@GeneratedValue(generator = "UUID")
@@ -29,28 +29,23 @@ public class Delivery implements Serializable {
 	@Column(name = "delivery_id")
 	private String id;
 	
-	@OneToOne @JoinColumn(name = "driver_id", referencedColumnName = "driver_id")
-	private Driver driver;
-	
-	@OneToOne @JoinColumn(name = "order_id", referencedColumnName = "order_id")
+	@ManyToOne
+	@JsonIgnore
+	@JoinColumn(name = "order_id")
 	private Order order;
+	
+	@ManyToOne
+	@JoinColumn(name = "driver_id")
+	private Driver driver;
 
-
-	public String getDeliveryId() {
+	public String getId() {
 		return id;
 	}
 
-
-	public void setDeliveryId(String deliveryId) {
-		this.id = deliveryId;
+	public void setId(String id) {
+		this.id = id;
 	}
 
-
-	public User getDriver() {
-		return driver.getDriver();
-	}
-
-	
 	public Order getOrder() {
 		return order;
 	}
@@ -59,9 +54,53 @@ public class Delivery implements Serializable {
 		this.order = order;
 	}
 
+	public Driver getDriver() {
+		return driver;
+	}
+
+	public void setDriver(Driver driver) {
+		this.driver = driver;
+	}
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((driver == null) ? 0 : driver.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((order == null) ? 0 : order.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Delivery other = (Delivery) obj;
+		if (driver == null) {
+			if (other.driver != null)
+				return false;
+		} else if (!driver.equals(other.driver))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (order == null) {
+			if (other.order != null)
+				return false;
+		} else if (!order.equals(other.order))
+			return false;
+		return true;
 	}
 	
 	
