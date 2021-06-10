@@ -19,6 +19,7 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
@@ -34,12 +35,18 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 		String header = request.getHeader(JwtProperties.HEADER_STRING);
 		
 		if(header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
-			chain.doFilter(request, response);
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 			return;
 		}
 		
-		Authentication authentication = getAuthentication(request);
-		SecurityContextHolder.getContext().setAuthentication(authentication);
+		try {
+			Authentication authentication = getAuthentication(request);
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+		} catch (TokenExpiredException e) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			return;
+		}
+		
 		
 		chain.doFilter(request, response);
 	}
