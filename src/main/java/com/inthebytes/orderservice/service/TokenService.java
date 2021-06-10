@@ -12,7 +12,7 @@ import com.inthebytes.orderservice.dao.UserDao;
 @Service
 public class TokenService {
 
-	protected class Credentials {
+	public class Credentials {
 		private String username;
 		private String role;
 		
