@@ -21,17 +21,17 @@ Resources:
       Description: IAM Role for ECS container
       AssumeRolePolicyDocument:
         Statement:
-        - Effect: Allow
-          Principal:
-            Service:
-            - ecs-tasks.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service:
+                - ecs-tasks.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Tags:
-          - Key: ApplicationName
-            Value: !Ref ApplicationName
-          - Key: ApplicationEnvironment
-            Value: !Ref ApplicationEnvironment
+        - Key: ApplicationName
+          Value: !Ref ApplicationName
+        - Key: ApplicationEnvironment
+          Value: !Ref ApplicationEnvironment
 
   # Fargate ECS Service
   MicroService:
