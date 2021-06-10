@@ -7,6 +7,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.swing.text.html.Option;
 
@@ -17,15 +18,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.jaxb.SpringDataJaxb.OrderDto;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.annotation.Validated;
 
+import com.fasterxml.jackson.databind.cfg.MapperConfig;
+import com.inthebytes.orderservice.dao.FoodDao;
 import com.inthebytes.orderservice.dao.LocationDao;
 import com.inthebytes.orderservice.dao.OrderDao;
 import com.inthebytes.orderservice.dao.UserDao;
 import com.inthebytes.orderservice.dao.RestaurantDao;
-import com.inthebytes.orderservice.dto.FoodDao;
 import com.inthebytes.orderservice.dto.ItemDto;
 import com.inthebytes.orderservice.dto.OrderDisplayDto;
 import com.inthebytes.orderservice.dto.OrderSubmissionDto;
+import com.inthebytes.orderservice.dto.group.AdminSubmissionCheck;
+import com.inthebytes.orderservice.dto.group.UserSubmissionCheck;
 import com.inthebytes.orderservice.entity.Food;
 import com.inthebytes.orderservice.entity.Location;
 import com.inthebytes.orderservice.entity.Order;
@@ -64,7 +69,7 @@ public class OrderService {
 
 
 	/**
-	 * Get Page of orders by authorization token
+	 * GET ORDERS PAGE
 	 * @param page
 	 * @param pageSize
 	 * @param token
@@ -96,7 +101,7 @@ public class OrderService {
 
 
 	/**
-	 * Get Single order by ID
+	 * GET ORDER
 	 * @param orderId
 	 * @param token
 	 * @return
@@ -135,7 +140,127 @@ public class OrderService {
 	}
 
 	/**
-	 * Creates an order using submission DTO
+	 * CANCEL ORDER
+	 * @param id
+	 * @param token
+	 * @return
+	 * @throws EntityNotExistsException
+	 * @throws NotAuthorizedException
+	 */
+	public Boolean cancelOrder(String id, String token) throws EntityNotExistsException, NotAuthorizedException {
+		Optional<Order> order = orderRepo.findById(id);
+		if (!order.isPresent())
+			throw new EntityNotExistsException("Order with given ID does not exist");
+
+		Credentials account = tokenService.readToken(token);
+		switch(account.getRole()) {
+		case "ROLE_ADMIN":
+			break;
+		case "ROLE_CUSTOMER":
+			if (order.get().getCustomer().getUsername().equals(account.getUsername()))
+				break;
+		default:
+			throw new NotAuthorizedException("User type not authorized to cancel orders");
+		}
+		order.get().setStatus(5);
+		orderRepo.save(order.get());
+		return true;
+	}
+	
+	/**
+	 * ORGANIZES UPDATE BY AUTHORIZATION
+	 * @param id
+	 * @param data
+	 * @param token
+	 * @return
+	 * @throws NotAuthorizedException
+	 * @throws EntityNotExistsException
+	 * @throws InvalidSubmissionException
+	 */
+	public OrderDisplayDto updateOrder(String id, OrderSubmissionDto data, String token) 
+			throws NotAuthorizedException, EntityNotExistsException, InvalidSubmissionException {
+		Credentials account = tokenService.readToken(token);
+		Optional<Order> order = orderRepo.findById(id);
+		if (order.isEmpty()) {
+			throw new EntityNotExistsException();
+		}
+		switch(account.getRole()) {
+		case "ROLE_ADMIN":
+			return authorizedUpdateOrder(order.get(), data);
+		case "ROLE_CUSTOMER":
+			if (account.getUsername().equals(order.get().getCustomer().getUsername())) {
+				return authorizedUpdateOrder(order.get(), data);
+			} else {
+				throw new NotAuthorizedException();
+			}
+		case "ROLE_DRIVER":
+		case "ROLE_RESTAURANT":
+			if (data.getStatus() != null)
+				return statusUpdate(order.get(), account.getUsername(), data.getStatus());
+		default:
+			throw new NotAuthorizedException();
+		}
+	}
+	
+	/**
+	 * UPDATES ORDER STATUS WITH AUTHORIZATION
+	 * @param entity
+	 * @param username
+	 * @param status
+	 * @return
+	 * @throws NotAuthorizedException
+	 */
+	public OrderDisplayDto statusUpdate(Order entity, String username, Integer status) throws NotAuthorizedException {
+		switch(status) {
+		case 2:
+		case 3:
+		case 4:
+			if (username.equals(entity.getDriver().getUsername())) {
+				break;
+			}
+			throw new NotAuthorizedException();
+		case 5:
+			List<String> usernames = entity.getRestaurant().getManager()
+				.stream()
+				.map((x) -> x.getUsername())
+				.collect(Collectors.toList());
+			if (usernames.contains(username)) {
+				break;
+			}
+		default:
+			throw new NotAuthorizedException();
+		}
+		entity.setStatus(status);
+		return mapper.convert(entity);
+	}
+
+	/**
+	 * UPDATE ORDER WITH SUBMISSION
+	 * @param id
+	 * @param data
+	 * @param token
+	 * @return
+	 * @throws EntityNotExistsException 
+	 * @throws InvalidSubmissionException 
+	 */
+	public OrderDisplayDto authorizedUpdateOrder(Order entity, OrderSubmissionDto data) 
+			throws EntityNotExistsException, InvalidSubmissionException {
+		
+		if (data.getItems() != null && data.getItems().size() > 0)
+			entity = setFoods(entity, data);
+		
+		if (data.getWindowStart() == null)
+			data.setWindowStart(entity.getWindowStart());
+		if (data.getWindowEnd() == null)
+			data.setWindowEnd(entity.getWindowEnd());
+		
+		entity = mapper.updateOrder(entity, data);
+		entity = orderRepo.save(entity);
+		return mapper.convert(entity);
+	}
+
+	/**
+	 * CREATE ORDER FROM SUBMISSION
 	 * @param data
 	 * @param token
 	 * @return
@@ -162,14 +287,12 @@ public class OrderService {
 	}
 
 	/**
-	 * Checks if time window included in submission DTO - sets default if not
+	 * SET DEFAULT TIME WINDOW
 	 * @param data
 	 * @return
 	 */
 	private OrderSubmissionDto setTimeWindow(OrderSubmissionDto data) {
 		if (data.getWindowStart() == null) {
-//			LocalDateTime startTime = LocalDateTime.now().plusHours(1L).truncatedTo(ChronoUnit.HOURS);
-//			Instant now = Instant.now();
 			data.setWindowStart(Timestamp.from(Instant.now()));
 		} 
 		if (data.getWindowEnd() == null) {
@@ -180,7 +303,7 @@ public class OrderService {
 	}
 
 	/**
-	 * Sets the restaurant for a given order
+	 * SET RESTAURANT
 	 * @param order
 	 * @param data
 	 * @return
@@ -196,9 +319,9 @@ public class OrderService {
 		}
 		return order;
 	}
-	
+
 	/**
-	 * Sets the destination for an order - by Location ID provided (priority) OR Location Details
+	 * SET DESTINATION
 	 * @param order
 	 * @param data
 	 * @return
@@ -219,7 +342,7 @@ public class OrderService {
 	}
 
 	/**
-	 * Sets food list an order with item data provided
+	 * SET FOODS
 	 * @param order
 	 * @param data
 	 * @return
@@ -248,14 +371,16 @@ public class OrderService {
 	}
 
 	/**
-	 * Sets order customer to (required) data provided - user ID. Returns fully created order
+	 * ADMIN CREATE
 	 * @param order
 	 * @param data
 	 * @return
 	 * @throws EntityNotExistsException
 	 * @throws InvalidSubmissionException
 	 */
-	private OrderDisplayDto adminCreate(Order order, OrderSubmissionDto data) throws EntityNotExistsException, InvalidSubmissionException {
+	private OrderDisplayDto adminCreate(Order order, @Validated(AdminSubmissionCheck.class) OrderSubmissionDto data) 
+			throws EntityNotExistsException, InvalidSubmissionException {
+		
 		if (data.getCustomerId() == null)
 			throw new InvalidSubmissionException("A customer account must be assigned to the order");
 		else {
@@ -271,13 +396,13 @@ public class OrderService {
 	}
 
 	/**
-	 * Sets order customer by authorization data. Returns fully created order
+	 * CUSTOMER CREATE
 	 * @param order
 	 * @param data
 	 * @param username
 	 * @return
 	 */
-	private OrderDisplayDto customerCreate(Order order, OrderSubmissionDto data, String username) {
+	private OrderDisplayDto customerCreate(Order order, @Validated(UserSubmissionCheck.class) OrderSubmissionDto data, String username) {
 		order.setCustomer(userRepo.findByUsername(username));
 		order = mapper.createOrder(order, data);
 		return mapper.convert(orderRepo.save(order));

@@ -17,6 +17,11 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 @Table(name = "order_food")
 public class OrderFood implements Serializable {
 
+	public OrderFood() {
+		super();
+		id = new OrderFoodKey();
+	}
+
 	private static final long serialVersionUID = 4793574294278895405L;
 
 	@EmbeddedId
@@ -50,6 +55,7 @@ public class OrderFood implements Serializable {
 
 	public void setOrder(Order order) {
 		this.order = order;
+		this.id.setOrderId(this.order.getId());
 	}
 
 	public Food getFood() {
@@ -58,6 +64,7 @@ public class OrderFood implements Serializable {
 
 	public void setFood(Food food) {
 		this.food = food;
+		this.id.setFoodId(this.food.getId());
 	}
 
 	public Integer getQuantity() {
@@ -70,5 +77,53 @@ public class OrderFood implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((food == null) ? 0 : food.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((order == null) ? 0 : order.hashCode());
+		result = prime * result + ((quantity == null) ? 0 : quantity.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OrderFood other = (OrderFood) obj;
+		if (food == null) {
+			if (other.food != null)
+				return false;
+		} else if (!food.equals(other.food))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (order == null) {
+			if (other.order != null)
+				return false;
+		} else if (!order.equals(other.order))
+			return false;
+		if (quantity == null) {
+			if (other.quantity != null)
+				return false;
+		} else if (!quantity.equals(other.quantity))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "OrderFood [id=" + id + ", order=" + order + ", food=" + food + ", quantity=" + quantity + "]";
 	}
 }

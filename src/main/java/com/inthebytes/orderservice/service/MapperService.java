@@ -2,19 +2,13 @@ package com.inthebytes.orderservice.service;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import org.hibernate.action.internal.EntityAction;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 
-import com.inthebytes.orderservice.dao.LocationDao;
-import com.inthebytes.orderservice.dao.RestaurantDao;
-import com.inthebytes.orderservice.dao.UserDao;
 import com.inthebytes.orderservice.dto.ItemDto;
 import com.inthebytes.orderservice.dto.LocationDto;
 import com.inthebytes.orderservice.dto.OrderDisplayDto;
@@ -29,15 +23,6 @@ import com.inthebytes.orderservice.entity.User;
 
 @Service
 public class MapperService {
-	
-	@Autowired
-	private LocationDao locRepo;
-	
-	@Autowired
-	private UserDao userRepo;
-	
-	@Autowired
-	private RestaurantDao restaurantRepo;
 	
 	public Order updateOrder(Order order, OrderSubmissionDto data) {
 		order.setWindowStart(data.getWindowStart());

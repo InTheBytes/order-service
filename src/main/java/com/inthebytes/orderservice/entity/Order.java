@@ -53,7 +53,7 @@ public class Order implements Serializable {
 	@ManyToOne @JoinColumn(name = "restaurant_id")
 	private Restaurant restaurant;
 	
-	@OneToMany(mappedBy = "order")
+	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderFood> foods;
 	
 	@OneToOne(mappedBy = "order", optional = true)
@@ -145,5 +145,92 @@ public class Order implements Serializable {
 
 	public static long getSerialversionuid() {
 		return serialVersionUID;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((customer == null) ? 0 : customer.hashCode());
+		result = prime * result + ((delivery == null) ? 0 : delivery.hashCode());
+		result = prime * result + ((destination == null) ? 0 : destination.hashCode());
+		result = prime * result + ((foods == null) ? 0 : foods.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((restaurant == null) ? 0 : restaurant.hashCode());
+		result = prime * result + ((specialInstructions == null) ? 0 : specialInstructions.hashCode());
+		result = prime * result + ((status == null) ? 0 : status.hashCode());
+		result = prime * result + ((windowEnd == null) ? 0 : windowEnd.hashCode());
+		result = prime * result + ((windowStart == null) ? 0 : windowStart.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Order other = (Order) obj;
+		if (customer == null) {
+			if (other.customer != null)
+				return false;
+		} else if (!customer.equals(other.customer))
+			return false;
+		if (delivery == null) {
+			if (other.delivery != null)
+				return false;
+		} else if (!delivery.equals(other.delivery))
+			return false;
+		if (destination == null) {
+			if (other.destination != null)
+				return false;
+		} else if (!destination.equals(other.destination))
+			return false;
+		if (foods == null) {
+			if (other.foods != null)
+				return false;
+		} else if (!foods.equals(other.foods))
+			return false;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		if (restaurant == null) {
+			if (other.restaurant != null)
+				return false;
+		} else if (!restaurant.equals(other.restaurant))
+			return false;
+		if (specialInstructions == null) {
+			if (other.specialInstructions != null)
+				return false;
+		} else if (!specialInstructions.equals(other.specialInstructions))
+			return false;
+		if (status == null) {
+			if (other.status != null)
+				return false;
+		} else if (!status.equals(other.status))
+			return false;
+		if (windowEnd == null) {
+			if (other.windowEnd != null)
+				return false;
+		} else if (!windowEnd.equals(other.windowEnd))
+			return false;
+		if (windowStart == null) {
+			if (other.windowStart != null)
+				return false;
+		} else if (!windowStart.equals(other.windowStart))
+			return false;
+		return true;
+	}
+
+	@Override
+	public String toString() {
+		return "Order [id=" + id + ", status=" + status + ", specialInstructions=" + specialInstructions
+				+ ", windowStart=" + windowStart + ", windowEnd=" + windowEnd + ", customer=" + customer
+				+ ", destination=" + destination + ", restaurant=" + restaurant + ", foods=" + foods + ", delivery="
+				+ delivery + "]";
 	}
 }

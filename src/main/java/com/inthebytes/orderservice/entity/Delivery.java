@@ -102,7 +102,10 @@ public class Delivery implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
+
+	@Override
+	public String toString() {
+		return "Delivery [id=" + id + ", order=" + order + ", driver=" + driver + "]";
+	}
 
 }

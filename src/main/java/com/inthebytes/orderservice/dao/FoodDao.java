@@ -1,4 +1,4 @@
-package com.inthebytes.orderservice.dto;
+package com.inthebytes.orderservice.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
