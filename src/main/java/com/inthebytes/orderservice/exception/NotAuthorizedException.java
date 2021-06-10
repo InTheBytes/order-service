@@ -1,6 +1,6 @@
 package com.inthebytes.orderservice.exception;
 
-public class NotAuthorizedException extends Exception {
+public class NotAuthorizedException extends RuntimeException {
 
 	private static final long serialVersionUID = 1991183870062746825L;
 

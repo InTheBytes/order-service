@@ -35,7 +35,7 @@ public class OrderController {
 			@RequestHeader(name = JwtProperties.HEADER_STRING) String token,
 			@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
 			@RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize
-			) throws NotAuthorizedException, EntityNotExistsException{
+			) {
 		
 		if (orderId == null || orderId.trim().isEmpty()) {
 			return ResponseEntity.ok(service.getOrders(page, pageSize, token));
@@ -48,7 +48,7 @@ public class OrderController {
 	public ResponseEntity<?> createOrder(
 			@RequestBody OrderSubmissionDto data,
 			@RequestHeader(name = JwtProperties.HEADER_STRING) String token
-			) throws NotAuthorizedException, InvalidSubmissionException, EntityNotExistsException {
+			) {
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(service.createOrder(data, token));
 	}
@@ -58,7 +58,7 @@ public class OrderController {
 			@PathVariable String orderId,
 			@RequestHeader(name = JwtProperties.HEADER_STRING) String token,
 			@RequestBody OrderSubmissionDto data
-			) throws EntityNotExistsException, InvalidSubmissionException, NotAuthorizedException {
+			) {
 
 		return ResponseEntity.ok(service.updateOrder(orderId, data, token));
 	}
@@ -67,7 +67,7 @@ public class OrderController {
 	public ResponseEntity<?> cancelOrder(
 			@PathVariable String orderId,
 			@RequestHeader(name = JwtProperties.HEADER_STRING) String token
-			) throws EntityNotExistsException, NotAuthorizedException {
+			) {
 
 		service.cancelOrder(orderId, token);
 		return ResponseEntity.ok(null);

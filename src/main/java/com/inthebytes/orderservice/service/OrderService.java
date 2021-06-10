@@ -182,7 +182,7 @@ public class OrderService {
 		Credentials account = tokenService.readToken(token);
 		Optional<Order> order = orderRepo.findById(id);
 		if (order.isEmpty()) {
-			throw new EntityNotExistsException();
+			throw new EntityNotExistsException("No order by that ID");
 		}
 		switch(account.getRole()) {
 		case "ROLE_ADMIN":
@@ -191,14 +191,14 @@ public class OrderService {
 			if (account.getUsername().equals(order.get().getCustomer().getUsername())) {
 				return authorizedUpdateOrder(order.get(), data);
 			} else {
-				throw new NotAuthorizedException();
+				throw new NotAuthorizedException("Not authorized to access this order");
 			}
 		case "ROLE_DRIVER":
 		case "ROLE_RESTAURANT":
 			if (data.getStatus() != null)
 				return statusUpdate(order.get(), account.getUsername(), data.getStatus());
 		default:
-			throw new NotAuthorizedException();
+			throw new NotAuthorizedException("Not authorized to access this order");
 		}
 	}
 	
@@ -228,7 +228,7 @@ public class OrderService {
 				break;
 			}
 		default:
-			throw new NotAuthorizedException();
+			throw new NotAuthorizedException("Not authorized for this update");
 		}
 		entity.setStatus(status);
 		return mapper.convert(entity);
@@ -268,7 +268,7 @@ public class OrderService {
 	 * @throws InvalidSubmissionException
 	 * @throws EntityNotExistsException
 	 */
-	public OrderDisplayDto createOrder(OrderSubmissionDto data, String token) throws NotAuthorizedException, InvalidSubmissionException, EntityNotExistsException {
+	public OrderDisplayDto createOrder(OrderSubmissionDto data, String token) {
 		Order order = new Order();
 		data = setTimeWindow(data);
 		order = setRestaurant(order, data);
@@ -310,7 +310,7 @@ public class OrderService {
 	 * @throws InvalidSubmissionException
 	 * @throws EntityNotExistsException
 	 */
-	private Order setRestaurant(Order order, OrderSubmissionDto data) throws InvalidSubmissionException, EntityNotExistsException {
+	private Order setRestaurant(Order order, OrderSubmissionDto data) {
 		Optional<Restaurant> restaurant = restaurantRepo.findById(data.getRestaurantId());
 		if (restaurant.isPresent()) {
 			order.setRestaurant(restaurant.get());
@@ -327,7 +327,7 @@ public class OrderService {
 	 * @return
 	 * @throws InvalidSubmissionException
 	 */
-	private Order setDestination(Order order, OrderSubmissionDto data) throws InvalidSubmissionException {
+	private Order setDestination(Order order, OrderSubmissionDto data) {
 		if (data.getDestinationId() != null && data.getDestinationId().trim().length() != 0) {
 			Optional<Location> loc = locRepo.findById(data.getDestinationId());
 			if (loc.isPresent()) {
@@ -348,7 +348,7 @@ public class OrderService {
 	 * @return
 	 * @throws InvalidSubmissionException
 	 */
-	private Order setFoods(Order order, OrderSubmissionDto data) throws InvalidSubmissionException {
+	private Order setFoods(Order order, OrderSubmissionDto data) {
 		List<OrderFood> foods = new ArrayList<OrderFood>();
 		data.getItems().stream().forEach(
 				(x) -> {
@@ -378,8 +378,7 @@ public class OrderService {
 	 * @throws EntityNotExistsException
 	 * @throws InvalidSubmissionException
 	 */
-	private OrderDisplayDto adminCreate(Order order, @Validated(AdminSubmissionCheck.class) OrderSubmissionDto data) 
-			throws EntityNotExistsException, InvalidSubmissionException {
+	private OrderDisplayDto adminCreate(Order order, @Validated(AdminSubmissionCheck.class) OrderSubmissionDto data) {
 		
 		if (data.getCustomerId() == null)
 			throw new InvalidSubmissionException("A customer account must be assigned to the order");

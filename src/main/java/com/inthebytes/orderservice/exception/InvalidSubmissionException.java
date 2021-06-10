@@ -1,6 +1,6 @@
 package com.inthebytes.orderservice.exception;
 
-public class InvalidSubmissionException extends Exception {
+public class InvalidSubmissionException extends RuntimeException {
 
 	private static final long serialVersionUID = 109006903040925934L;
 

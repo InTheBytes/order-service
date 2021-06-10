@@ -1,6 +1,6 @@
 package com.inthebytes.orderservice.exception;
 
-public class EntityNotExistsException extends Exception {
+public class EntityNotExistsException extends RuntimeException {
 
 	private static final long serialVersionUID = 8594434715685045731L;
 
