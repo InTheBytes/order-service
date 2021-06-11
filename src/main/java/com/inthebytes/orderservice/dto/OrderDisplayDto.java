@@ -18,11 +18,11 @@ public class OrderDisplayDto {
 	
 	@Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private Timestamp windowStartTime;
+	private Timestamp windowStart;
 	
 	@Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
-	private Timestamp windowEndTime;
+	private Timestamp windowEnd;
 	
 	private String specialInstructions;
 	
@@ -91,15 +91,15 @@ public class OrderDisplayDto {
 	}
 
 	public Timestamp getWindowStartTime() {
-		return windowStartTime;
+		return windowStart;
 	}
 
 	public void setWindowStartTime(Timestamp windowStartTime) {
-		this.windowStartTime = windowStartTime;
+		this.windowStart = windowStartTime;
 	}
 
 	public Timestamp getWindowEndTime() {
-		return windowEndTime;
+		return windowEnd;
 	}
 
 	public String getSpecialInstructions() {
@@ -111,7 +111,7 @@ public class OrderDisplayDto {
 	}
 
 	public void setWindowEndTime(Timestamp windowEndTime) {
-		this.windowEndTime = windowEndTime;
+		this.windowEnd = windowEndTime;
 	}
 
 	@Override
@@ -126,8 +126,8 @@ public class OrderDisplayDto {
 		result = prime * result + ((restaurant == null) ? 0 : restaurant.hashCode());
 		result = prime * result + ((specialInstructions == null) ? 0 : specialInstructions.hashCode());
 		result = prime * result + ((status == null) ? 0 : status.hashCode());
-		result = prime * result + ((windowEndTime == null) ? 0 : windowEndTime.hashCode());
-		result = prime * result + ((windowStartTime == null) ? 0 : windowStartTime.hashCode());
+		result = prime * result + ((windowEnd == null) ? 0 : windowEnd.hashCode());
+		result = prime * result + ((windowStart == null) ? 0 : windowStart.hashCode());
 		return result;
 	}
 
@@ -180,15 +180,15 @@ public class OrderDisplayDto {
 				return false;
 		} else if (!status.equals(other.status))
 			return false;
-		if (windowEndTime == null) {
-			if (other.windowEndTime != null)
+		if (windowEnd == null) {
+			if (other.windowEnd != null)
 				return false;
-		} else if (!windowEndTime.equals(other.windowEndTime))
+		} else if (!windowEnd.equals(other.windowEnd))
 			return false;
-		if (windowStartTime == null) {
-			if (other.windowStartTime != null)
+		if (windowStart == null) {
+			if (other.windowStart != null)
 				return false;
-		} else if (!windowStartTime.equals(other.windowStartTime))
+		} else if (!windowStart.equals(other.windowStart))
 			return false;
 		return true;
 	}
@@ -196,7 +196,7 @@ public class OrderDisplayDto {
 	@Override
 	public String toString() {
 		return "OrderDisplayDto [id=" + id + ", status=" + status + ", destination=" + destination
-				+ ", windowStartTime=" + windowStartTime + ", windowEndTime=" + windowEndTime + ", specialInstructions="
+				+ ", windowStartTime=" + windowStart + ", windowEndTime=" + windowEnd + ", specialInstructions="
 				+ specialInstructions + ", customer=" + customer + ", driver=" + driver + ", restaurant=" + restaurant
 				+ ", items=" + items + "]";
 	}
