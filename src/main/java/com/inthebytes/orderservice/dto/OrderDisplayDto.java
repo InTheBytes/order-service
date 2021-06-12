@@ -14,7 +14,7 @@ public class OrderDisplayDto {
 	
 	private String status;
 	
-	private String destination;
+	private LocationDto destination;
 	
 	@Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
@@ -50,7 +50,7 @@ public class OrderDisplayDto {
 		this.status = status;
 	}
 
-	public String getDestination() {
+	public LocationDto getDestination() {
 		return destination;
 	}
 
@@ -70,7 +70,7 @@ public class OrderDisplayDto {
 		this.driver = driver;
 	}
 
-	public void setDestination(String destination) {
+	public void setDestination(LocationDto destination) {
 		this.destination = destination;
 	}
 

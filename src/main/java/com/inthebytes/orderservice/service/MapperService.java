@@ -68,7 +68,7 @@ public class MapperService {
 			return null;
 		OrderDisplayDto order = new OrderDisplayDto();
 		order.setId(entity.getId());
-		order.setDestination(convertAddress(entity.getDestination()));
+		order.setDestination(convert(entity.getDestination()));
 		order.setItems(convert(entity.getFoods()));
 		order.setCustomer(convert(entity.getCustomer()));
 		if (entity.getDelivery() != null)
@@ -130,18 +130,9 @@ public class MapperService {
 	private RestaurantDto convert(Restaurant entity) {
 		RestaurantDto restaurant = new RestaurantDto();
 		restaurant.setId(entity.getId());
-		restaurant.setLocation(convertAddress(entity.getLocation()));
+		restaurant.setLocation(convert(entity.getLocation()));
 		restaurant.setName(entity.getName());
 		return restaurant;
-	}
-	
-	private String convertAddress(Location entity) {
-		return String.format("%s %s, %s, %s %d", 
-				entity.getUnit(), 
-				entity.getStreet(), 
-				entity.getCity(), 
-				entity.getState(), 
-				entity.getZipCode());
 	}
 
 }

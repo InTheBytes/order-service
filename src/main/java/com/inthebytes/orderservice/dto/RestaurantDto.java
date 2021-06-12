@@ -6,7 +6,7 @@ public class RestaurantDto {
 	
 	private String name;
 	
-	private String location;
+	private LocationDto location;
 
 	public String getId() {
 		return id;
@@ -24,11 +24,11 @@ public class RestaurantDto {
 		this.name = name;
 	}
 
-	public String getLocation() {
+	public LocationDto getLocation() {
 		return location;
 	}
 
-	public void setLocation(String location) {
+	public void setLocation(LocationDto location) {
 		this.location = location;
 	}
 
