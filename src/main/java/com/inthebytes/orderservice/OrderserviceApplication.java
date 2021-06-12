@@ -22,7 +22,7 @@ public class OrderserviceApplication {
 			@Override
 			public void addCorsMappings(CorsRegistry registry) {
 				registry.addMapping("/**")
-						.allowedOriginPatterns("https://*.stacklunch.com", "https://stacklunch.com")
+						.allowedOriginPatterns("https://*.stacklunch.com", "https://stacklunch.com", "http://localhost:4200")
 						.allowCredentials(true)
 						.allowedMethods("HEAD", "GET", "PUT", "POST", "DELETE", "PATCH");
 			}
