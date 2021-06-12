@@ -145,4 +145,4 @@ Resources:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
       ListenerArn: '{{resolve:secretsmanager:CFT-Secrets:SecretString:listener-arn}}'
-      Priority: 9
+      Priority: 12
