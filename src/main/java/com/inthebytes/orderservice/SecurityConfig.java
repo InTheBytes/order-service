@@ -32,10 +32,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers(HttpMethod.POST, "/orders").hasAnyRole("ADMIN", "CUSTOMER")
 				.antMatchers(HttpMethod.POST, "/orders/**").hasAnyRole("ADMIN", "CUSTOMER")
 				.antMatchers(HttpMethod.PUT, "/orders/**").authenticated()
-				.antMatchers("/actuator/health").permitAll()
 			
 			.and()
-        	.httpBasic().disable();
+        	.httpBasic();
     }
     
     @Override

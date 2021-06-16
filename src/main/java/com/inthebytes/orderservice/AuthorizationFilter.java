@@ -22,10 +22,17 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
+
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 
 	public AuthorizationFilter(AuthenticationManager authenticationManager) {
 		super(authenticationManager);
+	}
+	
+	private void noTokenCheckForActuator(HttpServletRequest request, HttpServletResponse response) {
+		if (!request.getRequestURI().contains("actuator")) {
+			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+		}
 	}
 
 	@Override
@@ -35,7 +42,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 		String header = request.getHeader(JwtProperties.HEADER_STRING);
 		
 		if(header == null || !header.startsWith(JwtProperties.TOKEN_PREFIX)) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			noTokenCheckForActuator(request, response);
 			return;
 		}
 		
@@ -43,7 +50,7 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 			Authentication authentication = getAuthentication(request);
 			SecurityContextHolder.getContext().setAuthentication(authentication);
 		} catch (TokenExpiredException e) {
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+			noTokenCheckForActuator(request, response);
 			return;
 		}
 		
