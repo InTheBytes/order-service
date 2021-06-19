@@ -30,7 +30,7 @@ import com.inthebytes.orderservice.dto.OrderDisplayDto;
 import com.inthebytes.orderservice.dto.OrderSubmissionDto;
 
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("/order")
 @Tag(name = "orders", description = "The microservice for handling operations with orders")
 public class OrderController {
 
