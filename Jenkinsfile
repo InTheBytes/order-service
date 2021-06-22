@@ -48,7 +48,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Updating k8s image..'
-                sh './kubectl set image deployment/order-service order-service=241465518750.dkr.ecr.us-east-2.amazonaws.com/orderservice:latest'
+                sh '~/kubectl set image deployment/order-service order-service=241465518750.dkr.ecr.us-east-2.amazonaws.com/orderservice:latest'
             }
         }
     }
