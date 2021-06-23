@@ -31,6 +31,7 @@ public class MapperService {
 		if (data.getSpecialInstructions() == null)
 			data.setSpecialInstructions("none");
 		order.setSpecialInstructions(data.getSpecialInstructions());
+		order.setDestination(createLoc(data.getDestination()));
 		return order;
 	}
 	

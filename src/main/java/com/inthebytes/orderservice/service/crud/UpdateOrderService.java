@@ -42,7 +42,7 @@ public class UpdateOrderService {
 	 */
 	public OrderDisplayDto updateOrder(String id, OrderSubmissionDto data, Credentials account) {
 		Optional<Order> order = orderRepo.findById(id);
-		if (order.isEmpty()) {
+		if (!order.isPresent()) {
 			throw new EntityNotExistsException("No order by that ID");
 		}
 		switch(account.getRole()) {
