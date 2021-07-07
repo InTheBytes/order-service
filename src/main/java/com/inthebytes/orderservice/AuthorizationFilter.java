@@ -78,6 +78,8 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
 				GrantedAuthority authority = new SimpleGrantedAuthority(role);
 				authorities.add(authority);
 				UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(userName, null, authorities);
+				request.setAttribute("username", userName);
+				request.setAttribute("role", role.split("_")[1].toLowerCase());
 				return auth;
 			}
 			return null;
