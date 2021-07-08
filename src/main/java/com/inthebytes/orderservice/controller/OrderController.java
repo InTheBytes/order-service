@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -51,15 +52,16 @@ public class OrderController {
 	@GetMapping(value = {"", "/{orderId}"})
 	public ResponseEntity<?> getOrders(
 			@PathVariable(required = false) String orderId,
-			@RequestHeader(name = JwtProperties.HEADER_STRING) String token,
+			@RequestAttribute String username,
+			@RequestAttribute String role,
 			@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
 			@RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize
 			) {
 		
 		if (orderId == null || orderId.trim().isEmpty()) {
-			return ResponseEntity.ok(service.getOrders(page, pageSize, token));
+			return ResponseEntity.ok(service.getOrders(page, pageSize, username, role));
 		} else {
-			return ResponseEntity.ok(service.getOrder(orderId, token));
+			return ResponseEntity.ok(service.getOrder(orderId, username, role));
 		}
 	}
 
@@ -79,10 +81,11 @@ public class OrderController {
 	@PostMapping(value = "")
 	public ResponseEntity<OrderDisplayDto> createOrder(
 			@RequestBody OrderSubmissionDto data,
-			@RequestHeader(name = JwtProperties.HEADER_STRING) String token
+			@RequestAttribute String username,
+			@RequestAttribute String role
 			) {
 
-		OrderDisplayDto result = service.createOrder(data, token);
+		OrderDisplayDto result = service.createOrder(data, username, role);
 		HttpHeaders headers = new HttpHeaders();
 		headers.set("location", result.getId());
 		return ResponseEntity.status(HttpStatus.CREATED).headers(headers).body(result);
@@ -106,11 +109,12 @@ public class OrderController {
 	@PutMapping(value = "/{orderId}")
 	public ResponseEntity<?> updateOrder(
 			@PathVariable String orderId,
-			@RequestHeader(name = JwtProperties.HEADER_STRING) String token,
+			@RequestAttribute String username,
+			@RequestAttribute String role,
 			@RequestBody OrderSubmissionDto data
 			) {
 
-		return ResponseEntity.ok(service.updateOrder(orderId, data, token));
+		return ResponseEntity.ok(service.updateOrder(orderId, data, username, role));
 	}
 
 	
@@ -125,10 +129,11 @@ public class OrderController {
 	@DeleteMapping(value = "/{orderId}")
 	public ResponseEntity<?> cancelOrder(
 			@PathVariable String orderId,
-			@RequestHeader(name = JwtProperties.HEADER_STRING) String token
+			@RequestAttribute String username,
+			@RequestAttribute String role
 			) {
 
-		service.cancelOrder(orderId, token);
+		service.cancelOrder(orderId, username, role);
 		return ResponseEntity.ok(null);
 	}
 

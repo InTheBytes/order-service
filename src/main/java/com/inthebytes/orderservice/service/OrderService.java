@@ -12,9 +12,6 @@ import com.inthebytes.orderservice.service.crud.CreateOrderService;
 
 @Service
 public class OrderService {
-
-	@Autowired
-	private TokenService tokenService;
 	
 	@Autowired
 	private GetOrderService getService;
@@ -29,24 +26,26 @@ public class OrderService {
 	private CreateOrderService createService;
 	
 	/**
-	 * GET ORDER BY ID
+	 * Get order by ID - supplying username and role for security checks
 	 * @param orderId
-	 * @param token
-	 * @return
+	 * @param username
+	 * @param role
+	 * @return OrderDisplayDto
 	 */
-	public OrderDisplayDto getOrder(String orderId, String token) {
-		return getService.getOrder(orderId, tokenService.readToken(token));
+	public OrderDisplayDto getOrder(String orderId, String username, String role) {
+		return ("admin".equals(role)) ? getService.getOrder(orderId) : getService.getOrder(orderId, username);
 	}
 	
 	/**
 	 * GET PAGE OF ORDERS
 	 * @param page
 	 * @param pageSize
-	 * @param token
-	 * @return
+	 * @param username
+	 * @param role
+	 * @return OrderDisplayDto
 	 */
-	public Page<OrderDisplayDto> getOrders(Integer page, Integer pageSize, String token) {
-		return getService.getOrders(page, pageSize, tokenService.readToken(token));
+	public Page<OrderDisplayDto> getOrders(Integer page, Integer pageSize, String username, String role) {
+		return getService.getOrders(page, pageSize, username, role);
 	}
 
 	/**
@@ -55,8 +54,8 @@ public class OrderService {
 	 * @param token
 	 * @return
 	 */
-	public Boolean cancelOrder(String orderId, String token) {
-		return deleteService.cancelOrder(orderId, tokenService.readToken(token));
+	public Boolean cancelOrder(String orderId, String username, String role) {
+		return deleteService.cancelOrder(orderId, username, role);
 	}
 	
 	/**
@@ -66,8 +65,8 @@ public class OrderService {
 	 * @param token
 	 * @return
 	 */
-	public OrderDisplayDto updateOrder(String orderId, OrderSubmissionDto data, String token) {
-		return updateService.updateOrder(orderId, data, tokenService.readToken(token));
+	public OrderDisplayDto updateOrder(String orderId, OrderSubmissionDto data, String username, String role) {
+		return updateService.updateOrder(orderId, data, username, role);
 	}
 	
 	
@@ -77,7 +76,7 @@ public class OrderService {
 	 * @param token
 	 * @return
 	 */
-	public OrderDisplayDto createOrder(OrderSubmissionDto data, String token) {
-		return createService.createOrder(data, tokenService.readToken(token));
+	public OrderDisplayDto createOrder(OrderSubmissionDto data, String username, String role) {
+		return createService.createOrder(data, username, role);
 	}
 }

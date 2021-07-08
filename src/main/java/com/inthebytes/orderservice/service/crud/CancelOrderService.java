@@ -4,14 +4,15 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.inthebytes.orderservice.dao.OrderDao;
 import com.inthebytes.orderservice.entity.Order;
 import com.inthebytes.orderservice.exception.EntityNotExistsException;
 import com.inthebytes.orderservice.exception.NotAuthorizedException;
-import com.inthebytes.orderservice.service.TokenService.Credentials;
 
 @Service
+@Transactional
 public class CancelOrderService {
 
 	@Autowired
@@ -25,16 +26,16 @@ public class CancelOrderService {
 	 * @throws EntityNotExistsException
 	 * @throws NotAuthorizedException
 	 */
-	public Boolean cancelOrder(String id, Credentials account) {
+	public Boolean cancelOrder(String id, String username, String role) {
 		Optional<Order> order = orderRepo.findById(id);
 		if (!order.isPresent())
 			throw new EntityNotExistsException("Order with given ID does not exist");
 
-		switch(account.getRole()) {
-		case "ROLE_ADMIN":
+		switch(role) {
+		case "admin":
 			break;
-		case "ROLE_CUSTOMER":
-			if (order.get().getCustomer().getUsername().equals(account.getUsername()))
+		case "customer":
+			if (order.get().getCustomer().getUsername().equals(username))
 				break;
 		default:
 			throw new NotAuthorizedException("User type not authorized to cancel orders");
