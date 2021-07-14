@@ -16,4 +16,5 @@ public interface OrderDao extends JpaRepository<Order, String> {
 	Page<Order> findByCustomerUsername(String username, Pageable pageable);
 	Page<Order> findByRestaurantManagerUsername(String username, Pageable pageable);
 	Page<Order> findByDeliveryDriverDriverUsername(String username, Pageable pageable);
+	Page<Order> findByStatus(Integer status, Pageable pageable);
 }

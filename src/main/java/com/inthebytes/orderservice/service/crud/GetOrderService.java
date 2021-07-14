@@ -53,7 +53,8 @@ public class GetOrderService {
 			orders = orderRepo.findByCustomerUsername(username, pageable);
 			break;
 		case "driver":
-			orders = orderRepo.findByDeliveryDriverDriverUsername(username, pageable);
+			orders = orderRepo.findByStatus(0, pageable);
+//			orders = orderRepo.findByDeliveryDriverDriverUsername(username, pageable);
 			break;
 		case "restaurant":
 			orders = orderRepo.findByRestaurantManagerUsername(username, pageable);
