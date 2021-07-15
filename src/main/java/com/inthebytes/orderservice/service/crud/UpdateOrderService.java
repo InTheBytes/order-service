@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.inthebytes.orderservice.dto.OrderDisplayDto;
@@ -13,12 +14,12 @@ import com.inthebytes.orderservice.entity.Order;
 import com.inthebytes.orderservice.exception.EntityNotExistsException;
 import com.inthebytes.orderservice.exception.InvalidSubmissionException;
 import com.inthebytes.orderservice.exception.NotAuthorizedException;
-import com.inthebytes.orderservice.service.TokenService.Credentials;
 import com.inthebytes.orderservice.dao.OrderDao;
 import com.inthebytes.orderservice.service.crud.UpdateOrderService;
 import com.inthebytes.orderservice.service.MapperService;
 
 @Service
+@Transactional
 public class UpdateOrderService {
 	
 	@Autowired
@@ -40,24 +41,24 @@ public class UpdateOrderService {
 	 * @throws EntityNotExistsException
 	 * @throws InvalidSubmissionException
 	 */
-	public OrderDisplayDto updateOrder(String id, OrderSubmissionDto data, Credentials account) {
+	public OrderDisplayDto updateOrder(String id, OrderSubmissionDto data, String username, String role) {
 		Optional<Order> order = orderRepo.findById(id);
 		if (!order.isPresent()) {
 			throw new EntityNotExistsException("No order by that ID");
 		}
-		switch(account.getRole()) {
-		case "ROLE_ADMIN":
+		switch(role) {
+		case "admin":
 			return authorizedUpdateOrder(order.get(), data);
-		case "ROLE_CUSTOMER":
-			if (account.getUsername().equals(order.get().getCustomer().getUsername())) {
+		case "customer":
+			if (username.equals(order.get().getCustomer().getUsername())) {
 				return authorizedUpdateOrder(order.get(), data);
 			} else {
 				throw new NotAuthorizedException("Not authorized to access this order");
 			}
-		case "ROLE_DRIVER":
-		case "ROLE_RESTAURANT":
+		case "driver":
+		case "restaurant":
 			if (data.getStatus() != null)
-				return statusUpdate(order.get(), account.getUsername(), data.getStatus());
+				return statusUpdate(order.get(), username, data.getStatus());
 		default:
 			throw new NotAuthorizedException("Not authorized to access this order");
 		}

@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 import com.inthebytes.orderservice.dao.FoodDao;
@@ -30,9 +31,9 @@ import com.inthebytes.orderservice.exception.EntityNotExistsException;
 import com.inthebytes.orderservice.exception.InvalidSubmissionException;
 import com.inthebytes.orderservice.exception.NotAuthorizedException;
 import com.inthebytes.orderservice.service.MapperService;
-import com.inthebytes.orderservice.service.TokenService.Credentials;
 
 @Service
+@Transactional
 public class CreateOrderService {
 	
 	@Autowired
@@ -62,18 +63,18 @@ public class CreateOrderService {
 	 * @throws InvalidSubmissionException
 	 * @throws EntityNotExistsException
 	 */
-	public OrderDisplayDto createOrder(OrderSubmissionDto data, Credentials account) {
+	public OrderDisplayDto createOrder(OrderSubmissionDto data, String username, String role) {
 		Order order = new Order();
 		data = setTimeWindow(data);
 		order = setRestaurant(order, data);
 		order = setDestination(order, data);
 		order = setFoods(order, data);
 
-		switch (account.getRole()) {
-		case "ROLE_ADMIN":
+		switch (role) {
+		case "admin":
 			return adminCreate(order, data);
-		case "ROLE_CUSTOMER":
-			return customerCreate(order, data, account.getUsername());
+		case "username":
+			return customerCreate(order, data, username);
 		default:
 			throw new NotAuthorizedException("Account not authorized to create orders");
 		}
