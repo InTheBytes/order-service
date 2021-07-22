@@ -90,15 +90,15 @@ public class OrderDisplayDto {
 		this.items = items;
 	}
 
-	public Timestamp getWindowStartTime() {
+	public Timestamp getWindowStart() {
 		return windowStart;
 	}
 
-	public void setWindowStartTime(Timestamp windowStartTime) {
-		this.windowStart = windowStartTime;
+	public void setWindowStart(Timestamp windowStart) {
+		this.windowStart = windowStart;
 	}
 
-	public Timestamp getWindowEndTime() {
+	public Timestamp getWindowEnd() {
 		return windowEnd;
 	}
 
@@ -110,8 +110,8 @@ public class OrderDisplayDto {
 		this.specialInstructions = specialInstructions;
 	}
 
-	public void setWindowEndTime(Timestamp windowEndTime) {
-		this.windowEnd = windowEndTime;
+	public void setWindowEnd(Timestamp windowEnd) {
+		this.windowEnd = windowEnd;
 	}
 
 	@Override

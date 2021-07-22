@@ -75,8 +75,8 @@ public class MapperService {
 		if (entity.getDelivery() != null)
 			order.setDriver(convert(entity.getDelivery().getDriver().getDriver()));
 		order.setRestaurant(convert(entity.getRestaurant()));
-		order.setWindowStartTime(entity.getWindowStart());
-		order.setWindowEndTime(entity.getWindowEnd());
+		order.setWindowStart(entity.getWindowStart());
+		order.setWindowEnd(entity.getWindowEnd());
 		order.setSpecialInstructions(entity.getSpecialInstructions());
 		
 		String status;

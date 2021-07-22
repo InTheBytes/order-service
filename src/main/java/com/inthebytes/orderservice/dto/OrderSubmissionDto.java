@@ -3,10 +3,13 @@ package com.inthebytes.orderservice.dto;
 import java.sql.Timestamp;
 import java.util.List;
 
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.validation.Valid;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inthebytes.orderservice.dto.group.AdminSubmissionCheck;
 import com.inthebytes.orderservice.dto.group.UserSubmissionCheck;
 
@@ -34,8 +37,12 @@ public class OrderSubmissionDto {
 	
 	private Integer status;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp windowStart;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
 	private Timestamp windowEnd;
 	
 	private String specialInstructions;
