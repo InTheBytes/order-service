@@ -73,7 +73,7 @@ public class CreateOrderService {
 		switch (role) {
 		case "admin":
 			return adminCreate(order, data);
-		case "username":
+		case "customer":
 			return customerCreate(order, data, username);
 		default:
 			throw new NotAuthorizedException("Account not authorized to create orders");
