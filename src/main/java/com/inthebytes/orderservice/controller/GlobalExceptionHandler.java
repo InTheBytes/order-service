@@ -2,6 +2,8 @@ package com.inthebytes.orderservice.controller;
 
 import java.sql.SQLIntegrityConstraintViolationException;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,7 +12,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.inthebytes.orderservice.exception.EntityNotExistsException;
 import com.inthebytes.orderservice.exception.InvalidSubmissionException;
 import com.inthebytes.orderservice.exception.NotAuthorizedException;
@@ -18,9 +19,9 @@ import com.inthebytes.orderservice.exception.NotAuthorizedException;
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 	
-	@ExceptionHandler(value = EntityNotExistsException.class)
+	@ExceptionHandler(value = {EntityNotExistsException.class, EntityNotFoundException.class})
 	protected ResponseEntity<Object> handleNotFound(
-			EntityNotExistsException exc, WebRequest request) {
+			EntityNotFoundException exc, WebRequest request) {
 	
 		String body = "An ID provided in the request body or endpoint does not exist";
         return handleExceptionInternal(exc,	body, 
