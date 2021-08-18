@@ -1,8 +1,12 @@
 package com.inthebytes.orderservice.service.crud;
 
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -10,11 +14,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import com.inthebytes.orderservice.dto.OrderDisplayDto;
 import com.inthebytes.orderservice.dto.OrderSubmissionDto;
+import com.inthebytes.orderservice.entity.Delivery;
 import com.inthebytes.orderservice.entity.Order;
+import com.inthebytes.orderservice.entity.User;
 import com.inthebytes.orderservice.exception.EntityNotExistsException;
 import com.inthebytes.orderservice.exception.InvalidSubmissionException;
 import com.inthebytes.orderservice.exception.NotAuthorizedException;
 import com.inthebytes.orderservice.dao.OrderDao;
+import com.inthebytes.orderservice.dao.UserDao;
+import com.inthebytes.orderservice.dao.DriverDao;
 import com.inthebytes.orderservice.service.crud.UpdateOrderService;
 import com.inthebytes.orderservice.service.MapperService;
 
@@ -29,7 +37,13 @@ public class UpdateOrderService {
 	private OrderDao orderRepo;
 	
 	@Autowired
+	private UserDao userRepo;
+	
+	@Autowired
 	private CreateOrderService createService;
+	
+	@Autowired
+	private DriverDao driverRepo;
 
 	/**
 	 * ORGANIZES UPDATE BY AUTHORIZATION
@@ -48,7 +62,7 @@ public class UpdateOrderService {
 		}
 		switch(role) {
 		case "admin":
-			return authorizedUpdateOrder(order.get(), data);
+			return adminAuthorizedUpdateOrder(order.get(), data);
 		case "customer":
 			if (username.equals(order.get().getCustomer().getUsername())) {
 				return authorizedUpdateOrder(order.get(), data);
@@ -119,5 +133,25 @@ public class UpdateOrderService {
 		entity = mapper.updateOrder(entity, data);
 		entity = orderRepo.save(entity);
 		return mapper.convert(entity);
+	}
+	
+	public Order AddDriverToOrder(Order entity, OrderSubmissionDto data) {
+		if (data.getDriverId() == null || entity.getDelivery() != null) {
+			return entity;
+		}
+		Delivery delivery = new Delivery();
+		delivery.setStartTime(Timestamp.from(Instant.now()));
+		Optional<User> deliverDriver = userRepo.findById(data.getDriverId());
+		if (!deliverDriver.isPresent()) {
+			throw new EntityNotFoundException();
+		}
+		delivery.setDriver(driverRepo.findByDriver(deliverDriver.get()));
+		delivery.setOrder(entity);
+		entity.setDelivery(delivery);
+		return entity;
+	}
+	
+	public OrderDisplayDto adminAuthorizedUpdateOrder(Order entity, OrderSubmissionDto data) {
+		return authorizedUpdateOrder(AddDriverToOrder(entity, data), data);
 	}
 }

@@ -1,6 +1,7 @@
 package com.inthebytes.orderservice.entity;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -37,6 +38,9 @@ public class Delivery implements Serializable {
 	@ManyToOne
 	@JoinColumn(name = "driver_id")
 	private Driver driver;
+	
+	@Column(name = "start_time")
+	private Timestamp startTime;
 
 	public String getId() {
 		return id;
@@ -60,6 +64,14 @@ public class Delivery implements Serializable {
 
 	public void setDriver(Driver driver) {
 		this.driver = driver;
+	}
+
+	public Timestamp getStartTime() {
+		return startTime;
+	}
+
+	public void setStartTime(Timestamp startTime) {
+		this.startTime = startTime;
 	}
 
 	public static long getSerialversionuid() {
