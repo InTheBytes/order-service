@@ -56,7 +56,7 @@ public class Order implements Serializable {
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderFood> foods;
 	
-	@OneToOne(mappedBy = "order", optional = true)
+	@OneToOne(mappedBy = "order", optional = true, cascade = CascadeType.PERSIST)
 	private Delivery delivery;
 
 	public String getId() {

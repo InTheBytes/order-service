@@ -35,6 +35,8 @@ public class OrderSubmissionDto {
 			groups = {AdminSubmissionCheck.class, UserSubmissionCheck.class})
 	private List<ItemDto> items;
 	
+	private String driverId;
+	
 	private Integer status;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -94,6 +96,14 @@ public class OrderSubmissionDto {
 
 	public void setStatus(Integer status) {
 		this.status = status;
+	}
+
+	public String getDriverId() {
+		return driverId;
+	}
+
+	public void setDriverId(String driverId) {
+		this.driverId = driverId;
 	}
 
 	public Timestamp getWindowStart() {

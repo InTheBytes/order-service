@@ -1,6 +1,8 @@
 package com.inthebytes.orderservice.exception;
 
-public class EntityNotExistsException extends RuntimeException {
+import javax.persistence.EntityNotFoundException;
+
+public class EntityNotExistsException extends EntityNotFoundException {
 
 	private static final long serialVersionUID = 8594434715685045731L;
 
@@ -8,23 +10,9 @@ public class EntityNotExistsException extends RuntimeException {
 		super();
 	}
 
-	public EntityNotExistsException(String message, Throwable cause, boolean enableSuppression,
-			boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
-
-	public EntityNotExistsException(String message, Throwable cause) {
-		super(message, cause);
-	}
-
 	public EntityNotExistsException(String message) {
 		super(message);
+		// TODO Auto-generated constructor stub
 	}
-
-	public EntityNotExistsException(Throwable cause) {
-		super(cause);
-	}
-	
-	
 	
 }
