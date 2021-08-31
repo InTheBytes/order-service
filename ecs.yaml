@@ -140,7 +140,6 @@ Resources:
           Values:
             - /order*
             - /order/*
-            - /order/v3/api-docs
       Actions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
