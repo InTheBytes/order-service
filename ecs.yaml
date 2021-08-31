@@ -138,9 +138,9 @@ Resources:
       Conditions:
         - Field: path-pattern
           Values:
-            - /orders*
-            - /orders/*
-            - /v3/api-docs/orderservice
+            - /order*
+            - /order/*
+            - /order/v3/api-docs
       Actions:
         - Type: forward
           TargetGroupArn: !Ref TargetGroup
