@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.inthebytes.orderservice.dao.OrderDao;
 import com.inthebytes.orderservice.dto.OrderDisplayDto;
 import com.inthebytes.orderservice.entity.Order;
-import com.inthebytes.orderservice.entity.User;
 import com.inthebytes.orderservice.exception.EntityNotExistsException;
 import com.inthebytes.orderservice.exception.NotAuthorizedException;
 import com.inthebytes.orderservice.service.MapperService;
