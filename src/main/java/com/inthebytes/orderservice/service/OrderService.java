@@ -47,6 +47,19 @@ public class OrderService {
 	public Page<OrderDisplayDto> getOrders(Integer page, Integer pageSize, String username, String role) {
 		return getService.getOrders(page, pageSize, username, role);
 	}
+	
+
+
+	public Page<OrderDisplayDto> getOrdersByDetails(
+			Integer page, 
+			Integer pageSize, 
+			String username, 
+			String role, 
+			Integer status, 
+			String day) {
+		
+		return getService.getOrdersWithDetails(page, pageSize, username, role, status, day);
+	}
 
 	/**
 	 * CANCEL ORDER BY ID

@@ -2,6 +2,7 @@ package com.inthebytes.orderservice.service.crud;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import com.inthebytes.orderservice.dao.OrderDao;
 import com.inthebytes.orderservice.dto.OrderDisplayDto;
 import com.inthebytes.orderservice.entity.Order;
 import com.inthebytes.orderservice.exception.EntityNotExistsException;
+import com.inthebytes.orderservice.exception.InvalidSubmissionException;
 import com.inthebytes.orderservice.exception.NotAuthorizedException;
 import com.inthebytes.orderservice.service.MapperService;
 
@@ -102,6 +104,56 @@ public class GetOrderService {
 				throw new EntityNotExistsException("The associated restaurant doesn't have managers, or doesn't exist");
 			}
 			throw new NotAuthorizedException("Not authorized to view this order");
+		}
+	}
+	
+	/**
+	 * Big ol' method for getting specific kinds of orders for a restaurant account managing orders.
+	 * This is mainly intended for tracking and fulfilling orders for the 'kitchen staff' using the app.
+	 * Thus, implementation is EXTREMELY limited, picky, and poorly designed.
+	 * @param page
+	 * @param pageSize
+	 * @param username
+	 * @param role
+	 * @param status
+	 * @param day
+	 * @return
+	 */
+	public Page<OrderDisplayDto> getOrdersWithDetails(
+			Integer page, 
+			Integer pageSize, 
+			String username, 
+			String role, 
+			Integer status, 
+			String day) {
+		
+		if (!"restaurant".equals(role)) {
+			throw new NotAuthorizedException(
+					"Parameters for day and status are currently only supported for restaurant manager accounts");
+		} 
+		Pageable pageable = PageRequest.of(page, pageSize, Sort.by(Sort.Direction.ASC, "windowStart"));
+		Function<Order, OrderDisplayDto> mapping = x -> mapper.convert(x); 
+		
+		if (status == 2) {
+			return orderRepo.readyOrdersByManagerUsername(username, pageable).map(mapping);
+		} 
+		
+		if (status <= 1){
+			if ("today".equals(day)) {
+				return orderRepo.currentOrdersByManagerUsername(username, pageable).map(mapping);
+			} else if ("future".equals(day)) {
+				return orderRepo.scheduledOrdersByManagerUsername(username, pageable).map(mapping);
+			} else {
+				return orderRepo.findByStatusAndRestaurantManagerUsername(status, username, pageable).map(mapping);
+			}
+		}
+		
+		if (status > 2 && !"all".equals(day)) {
+			throw new InvalidSubmissionException(String.format("This API does not yet support the configuration of status %d with day parameter: %s", status, day));
+		} else if (status > 2) {
+				return orderRepo.findByStatusAndRestaurantManagerUsername(status, username, pageable).map(mapping);
+		} else {
+				return orderRepo.findByRestaurantManagerUsername(username, pageable).map(mapping);
 		}
 	}
 
