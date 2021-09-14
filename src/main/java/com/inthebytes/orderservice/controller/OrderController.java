@@ -52,10 +52,15 @@ public class OrderController {
 			@RequestAttribute String username,
 			@RequestAttribute String role,
 			@RequestParam(value = "page", required = false, defaultValue = "0") Integer page,
-			@RequestParam(value = "pageSize", required = false, defaultValue = "10") Integer pageSize
+			@RequestParam(value = "page-size", required = false, defaultValue = "10") Integer pageSize,
+			@RequestParam(value = "status", required = false, defaultValue = "-1") Integer status,
+			@RequestParam(value = "day", required = false, defaultValue = "all") String day
 			) {
 		
 		if (orderId == null || orderId.trim().isEmpty()) {
+			if (status != -1 || !"all".equals(day)) {
+				return ResponseEntity.ok(service.getOrdersByDetails(page, pageSize, username, role, status, day));
+			}
 			return ResponseEntity.ok(service.getOrders(page, pageSize, username, role));
 		} else {
 			return ResponseEntity.ok(service.getOrder(orderId, username, role));
